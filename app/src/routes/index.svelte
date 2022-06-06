@@ -3,7 +3,7 @@
 </script>
 
 <script>
-	import blogo from './solblog.svg';
+	import blogo from './bloglogofoo.svg';
 </script>
 
 <svelte:head>

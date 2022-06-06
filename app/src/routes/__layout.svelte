@@ -38,12 +38,10 @@
 
 <footer>
 	<center>
-		<p>
-			Submit <a href="https://douganderson444.hellonext.co/b/feedback" target="_blank">Feedback</a>
-		</p>
-		Fork & Contribute at:
-		<a href="https://github.com/DougAnderson444/solblog"
-			>https://github.com/DougAnderson444/solblog</a
+		
+		First Testing Blog:
+		<a href="Linkcomeslater"
+			>foo</a
 		><br />
 	</center>
 </footer>
