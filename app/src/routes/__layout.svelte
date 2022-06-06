@@ -40,9 +40,6 @@
 	<center>
 		
 		First Testing Blog:
-		<a href="Linkcomeslater"
-			>foo</a
-		><br />
 	</center>
 </footer>
 
