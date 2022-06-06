@@ -92,7 +92,6 @@ Channel syncs info about...
 		</div>
 	{/if}
 	<br />
-	<h2>Other People's Blogs</h2>
 	<div>Lastest SolBlog Activity:</div>
 	<BlogDetails blogAccounts={newestAccounts} />
 </div>
