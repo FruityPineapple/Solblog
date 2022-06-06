@@ -4,7 +4,7 @@ export const DEV_NET = 'devnet';
 export const MAIN_NET = 'mainnet';
 export const APP_WALLET = true;
 export const ADAPTER = '_adapter_immortaldb';
-export const programId = new PublicKey('BLoG9PtBTkhUbGRAYVe8jzd5ji1G2VPkzwbsRV3bnteD');
+export const programId = new PublicKey('3UctCe6uCKMvngtt993jM4jnXHs4hsQnLmgguWVRDwNx');
 export const config = {
 	[MAIN_NET]: { httpUri: 'https://api.mainnet-beta.solana.com' },
 	[DEV_NET]: { httpUri: 'https://api.devnet.solana.com' }

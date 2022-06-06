@@ -171,7 +171,7 @@ solana address -k ./target/deploy/solblog-keypair.json
 Which shows us our unique key:
 
 ```text
-BLoG9PtBTkhUbGRAYVe8jzd5ji1G2VPkzwbsRV3bnteD
+3UctCe6uCKMvngtt993jM4jnXHs4hsQnLmgguWVRDwNx
 ```
 
 Your key will look different, that's ok. Anchor will generate a unique keypair for everyone, which is how we can uniquely identify our programs from one another.

@@ -1,15 +1,15 @@
 use anchor_lang::prelude::*;
 use std::str::from_utf8;
-use anchor_lang::prelude::*;
-use anchor_lang::Discriminator;
+//use anchor_lang::prelude::*;
+//use anchor_lang::Discriminator;
 use solana_program::entrypoint::ProgramResult;
-use arrayref::array_ref;
+//use arrayref::array_ref;
 use gem_common::{errors::ErrorCode, *};
 use metaplex_token_metadata::state::Metadata;
 use anchor_spl::token::{Mint, TokenAccount};
 use std::str::FromStr;
 
-declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
+declare_id!("3UctCe6uCKMvngtt993jM4jnXHs4hsQnLmgguWVRDwNx");
 
 #[program]
 pub mod solblog {
@@ -35,6 +35,7 @@ pub mod solblog {
         ctx: Context<MutateAccount>,
         new_post: Vec<u8>, // <--- our blog post data
     ) -> ProgramResult {
+        assert_whitelisted(&ctx)?;
         let post = from_utf8(&new_post) // convert the array of bytes into a string slice
             .map_err(|err| {
                 msg!("Invalid UTF-8, from byte {}", err.valid_up_to());
@@ -77,26 +78,26 @@ pub struct Initialize<'info> {
 
 #[derive(Accounts)]
 pub struct MutateAccount<'info> {
-    #[account(
+    /*#[account(
         mut, // we can make changes to this account
-        has_one = authority)] // the authority has signed this post, allowing it to happen
+        has_one = authority
+    )] // the authority has signed this post, allowing it to happen */
+
     // this is here again because it holds that .latest_post field where our post is saved
-    pub blog_account: Account<'info, BlogAccount>, // <-- enable this account to also be used in the make_post function
-    // Also put authority here
-    // has_one = authority ensure it was provided as a function arg
-    // ensures the poster has the keys
-    // has to come after the Account statement above
-    // no mut this time, because we don't change authority when we post
+    #[account(mut)]
+    pub blog_account: Box<Account<'info, BlogAccount>>, // <-- enable this account to also be used in the make_post function
+    pub nft_source: Box<Account<'info, TokenAccount>>,
+    pub nft_mint: Box<Account<'info, Mint>>,
     pub authority: Signer<'info>,
 }
 
 #[account]
 pub struct BlogAccount {
-    pub authority: Pubkey,    // save the posting authority to this authority field
     pub latest_post: Vec<u8>, // <-- where the latest blog post will be stored
     pub bio: Vec<u8>,
     pub whitelisted_mints: u32,
     pub whitelisted_creators: u32,
+    pub authority: Pubkey,
 }
 
 
@@ -223,7 +224,7 @@ fn assert_valid_whitelist_proof<'info>(
     proof.contains_type(expected_whitelist_type)
 }
 
-fn assert_whitelisted(ctx: &Context<CreatePost>) -> Result<()> {
+fn assert_whitelisted(ctx: &Context<MutateAccount>) -> Result<()> {
     let bank = &*ctx.accounts.blog_account;
     let mint = &*ctx.accounts.nft_mint;
     let remaining_accs = &mut ctx.remaining_accounts.iter();
