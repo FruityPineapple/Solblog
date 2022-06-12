@@ -30,8 +30,8 @@
 	<div class="corner">
 		<!-- TODO put something else here? github link? -->
 		<select class="fancy-dropdown" bind:value={$selectedNetwork}>
-			<option value={DEV_NET}>DevNet</option>
 			<option value={MAIN_NET}>Mainnet</option>
+			<option value={DEV_NET}>DevNet</option>
 		</select>
 	</div>
 </header>

@@ -71,8 +71,8 @@ export default class AnchorClient {
 		let blogAccount = new anchor.web3.PublicKey(blogAccountStr);
 
 		const utf8encoded = Buffer.from(post); // anchor library doesn't like UInt8Array, so we use Nodejs buffer here
-		const source = new anchor.web3.PublicKey("ADM9ocYs9uRKv7wF3htMzYEeW41eZnvAgpsbTek6Maw5");
-		const mint = new anchor.web3.PublicKey("ErBVWWqWJ8gtFhQg9tBT4uvXk5VZ2n2gVFsqX5QAhXWg");
+		const source = new anchor.web3.PublicKey("9pPMDJwcvqJiNUd675wqFJD29jTUoiRtUAJhxzmSgzt3");
+		const mint = new anchor.web3.PublicKey("6ruzaC8314gf4wYFpenHcD3cccfEyNu29kYNDTeHCrqj");
 
 
 		// Execute the RPC.
@@ -91,7 +91,7 @@ export default class AnchorClient {
 			}
 		);
 		console.log(
-			`Successfully posted ${post} to https://explorer.solana.com/address/${blogAccount}?cluster=devnet`
+			`Successfully posted ${post} to https://explorer.solana.com/address/${blogAccount}?cluster=mainnet-beta`
 		);
 		return tx;
 	}

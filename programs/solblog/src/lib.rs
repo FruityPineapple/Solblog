@@ -35,7 +35,12 @@ pub mod solblog {
         ctx: Context<MutateAccount>,
         new_post: Vec<u8>, // <--- our blog post data
     ) -> ProgramResult {
-        assert_whitelisted(&ctx)?;
+        let source = &ctx.accounts.nft_source; //.to_account_info();
+        if source.amount < 1 {
+            return Err(error!(ErrorCode::NotWhitelisted).into());
+        }
+            
+        
         let post = from_utf8(&new_post) // convert the array of bytes into a string slice
             .map_err(|err| {
                 msg!("Invalid UTF-8, from byte {}", err.valid_up_to());
@@ -46,6 +51,8 @@ pub mod solblog {
         let b_acc = &mut ctx.accounts.blog_account;
         b_acc.latest_post = new_post; // save the latest post in the account.
                                       // past posts will be saved in transaction logs
+        
+        
 
         Ok(()) // return ok result
     }
@@ -57,7 +64,7 @@ pub mod solblog {
         b_acc.bio = new_bio; // save the latest bio in the account.
         Ok(()) // return ok result
     }
-    pub fn add_to_whitelist(ctx: Context<AddToWhitelist>, whitelist_type: u8) -> Result<()> {
+    /* pub fn add_to_whitelist(ctx: Context<AddToWhitelist>, whitelist_type: u8) -> Result<()> {
         {
             let acct = ctx.accounts.whitelist_proof.to_account_info();
             let data: &[u8] = &acct.try_borrow_data()?;
@@ -104,7 +111,7 @@ pub mod solblog {
         //     &ctx.accounts.address_to_whitelist.key()
         // );
         Ok(())
-    }
+    } */
 }
 
 #[derive(Accounts)]
@@ -149,7 +156,7 @@ pub struct BlogAccount {
 }
 
 
-#[derive(Accounts)]
+/*  #[derive(Accounts)]
 pub struct AddToWhitelist<'info> {
     #[account(mut, has_one = authority)]
     pub blog: Box<Account<'info, BlogAccount>>,
@@ -213,7 +220,7 @@ bitflags::bitflags! {
         const CREATOR = 1 << 0;
         const MINT = 1 << 1;
     }
-} 
+} */
 
 #[event]
 pub struct PostEvent {
@@ -222,7 +229,7 @@ pub struct PostEvent {
     pub next_post_id: Option<Pubkey>,
 }
 // helper functions for checking that the user has a doug/monk
-fn assert_valid_metadata(
+/* fn assert_valid_metadata(
     gem_metadata: &AccountInfo,
     gem_mint: &Pubkey,
 ) -> core::result::Result<Metadata, ProgramError> {
@@ -332,4 +339,4 @@ fn assert_whitelisted(ctx: &Context<MutateAccount>) -> Result<()> {
 
     // if both conditions above failed tok return Ok(()), then verification failed
     Err(error!(ErrorCode::NotWhitelisted))
-}
+} */
