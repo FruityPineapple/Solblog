@@ -1,9 +1,9 @@
 use anchor_lang::prelude::*;
 use std::str::from_utf8;
 //use anchor_lang::prelude::*;
-//use anchor_lang::Discriminator;
+use anchor_lang::Discriminator;
 use solana_program::entrypoint::ProgramResult;
-//use arrayref::array_ref;
+use arrayref::array_ref;
 use gem_common::{errors::ErrorCode, *};
 use metaplex_token_metadata::state::Metadata;
 use anchor_spl::token::{Mint, TokenAccount};
@@ -56,6 +56,54 @@ pub mod solblog {
         let b_acc = &mut ctx.accounts.blog_account;
         b_acc.bio = new_bio; // save the latest bio in the account.
         Ok(()) // return ok result
+    }
+    pub fn add_to_whitelist(ctx: Context<AddToWhitelist>, whitelist_type: u8) -> Result<()> {
+        {
+            let acct = ctx.accounts.whitelist_proof.to_account_info();
+            let data: &[u8] = &acct.try_borrow_data()?;
+            let disc_bytes = array_ref![data, 0, 8];
+            if disc_bytes != &WhitelistProof::discriminator() && disc_bytes.iter().any(|a| a != &0) {
+                return Err(error!(ErrorCode::AccountDiscriminatorMismatch));
+            }
+        }
+    
+        // create/update whitelist proof
+        let proof = &mut ctx.accounts.whitelist_proof;
+    
+        // if this is an update, decrement counts from existing whitelist
+        if proof.whitelist_type > 0 {
+            let existing_whitelist = WhitelistProof::read_type(proof.whitelist_type)?;
+            let blog = &mut ctx.accounts.blog;
+    
+            if existing_whitelist.contains(WhitelistType::CREATOR) {
+                blog.whitelisted_creators.try_sub_assign(1)?;
+            }
+            if existing_whitelist.contains(WhitelistType::MINT) {
+                blog.whitelisted_mints.try_sub_assign(1)?;
+            }
+        }
+    
+        // record new whitelist and increment counts
+        let new_whitelist = WhitelistProof::read_type(whitelist_type)?;
+    
+        proof.reset_type(new_whitelist);
+        proof.whitelisted_address = ctx.accounts.address_to_whitelist.key();
+        proof.blog = ctx.accounts.blog.key();
+    
+        let blog = &mut ctx.accounts.blog;
+    
+        if new_whitelist.contains(WhitelistType::CREATOR) {
+            blog.whitelisted_creators.try_add_assign(1)?;
+        }
+        if new_whitelist.contains(WhitelistType::MINT) {
+            blog.whitelisted_mints.try_add_assign(1)?;
+        }
+    
+        // msg!(
+        //     "{} added to whitelist",
+        //     &ctx.accounts.address_to_whitelist.key()
+        // );
+        Ok(())
     }
 }
 

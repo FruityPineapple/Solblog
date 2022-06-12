@@ -71,6 +71,9 @@ export default class AnchorClient {
 		let blogAccount = new anchor.web3.PublicKey(blogAccountStr);
 
 		const utf8encoded = Buffer.from(post); // anchor library doesn't like UInt8Array, so we use Nodejs buffer here
+		const source = new anchor.web3.PublicKey("ADM9ocYs9uRKv7wF3htMzYEeW41eZnvAgpsbTek6Maw5");
+		const mint = new anchor.web3.PublicKey("ErBVWWqWJ8gtFhQg9tBT4uvXk5VZ2n2gVFsqX5QAhXWg");
+
 
 		// Execute the RPC.
 		const tx = await this.program.rpc.makePost(
@@ -80,6 +83,8 @@ export default class AnchorClient {
 			{
 				accounts: {
 					blogAccount: blogAccount, // needs to be the same publicKey as init, or it won't work
+					nftSource: source,
+					nftMint: mint,
 					authority: this.program.provider.wallet.publicKey // needs to be the same publicKey as init, or it won't work
 				},
 				signers: [this.program.provider.wallet.payer] // needs to be the same keyPAIR as init, or it won't work

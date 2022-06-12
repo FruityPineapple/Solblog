@@ -1,96 +1,209 @@
 {
-    "version": "0.0.0",
-    "name": "solblog",
-    "instructions": [
-      {
-        "name": "initialize",
-        "accounts": [
-          {
-            "name": "blogAccount",
-            "isMut": true,
-            "isSigner": true
-          },
-          {
-            "name": "authority",
-            "isMut": true,
-            "isSigner": true
-          },
-          {
-            "name": "systemProgram",
-            "isMut": false,
-            "isSigner": false
-          }
-        ],
-        "args": [
-          {
-            "name": "newBio",
-            "type": "bytes"
-          }
-        ]
-      },
-      {
-        "name": "makePost",
-        "accounts": [
-          {
-            "name": "blogAccount",
-            "isMut": true,
-            "isSigner": false
-          },
-          {
-            "name": "authority",
-            "isMut": false,
-            "isSigner": true
-          }
-        ],
-        "args": [
-          {
-            "name": "newPost",
-            "type": "bytes"
-          }
-        ]
-      },
-      {
-        "name": "updateBio",
-        "accounts": [
-          {
-            "name": "blogAccount",
-            "isMut": true,
-            "isSigner": false
-          },
-          {
-            "name": "authority",
-            "isMut": false,
-            "isSigner": true
-          }
-        ],
-        "args": [
-          {
-            "name": "newBio",
-            "type": "bytes"
-          }
-        ]
-      }
-    ],
-    "accounts": [
-      {
-        "name": "BlogAccount",
-        "type": {
-          "kind": "struct",
-          "fields": [
-            {
-              "name": "authority",
-              "type": "publicKey"
-            },
-            {
-              "name": "latestPost",
-              "type": "bytes"
-            },
-            {
-              "name": "bio",
-              "type": "bytes"
-            }
-          ]
+  "version": "0.1.0",
+  "name": "solblog",
+  "instructions": [
+    {
+      "name": "initialize",
+      "accounts": [
+        {
+          "name": "blogAccount",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
         }
+      ],
+      "args": [
+        {
+          "name": "newBio",
+          "type": "bytes"
+        }
+      ]
+    },
+    {
+      "name": "makePost",
+      "accounts": [
+        {
+          "name": "blogAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "nftSource",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "nftMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "newPost",
+          "type": "bytes"
+        }
+      ]
+    },
+    {
+      "name": "updateBio",
+      "accounts": [
+        {
+          "name": "blogAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "nftSource",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "nftMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "newBio",
+          "type": "bytes"
+        }
+      ]
+    },
+    {
+      "name": "addToWhitelist",
+      "accounts": [
+        {
+          "name": "blog",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "addressToWhitelist",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "whitelistProof",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "whitelistType",
+          "type": "u8"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "BlogAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "latestPost",
+            "type": "bytes"
+          },
+          {
+            "name": "bio",
+            "type": "bytes"
+          },
+          {
+            "name": "whitelistedMints",
+            "type": "u32"
+          },
+          {
+            "name": "whitelistedCreators",
+            "type": "u32"
+          },
+          {
+            "name": "authority",
+            "type": "publicKey"
+          }
+        ]
       }
-    ]
-  }
+    },
+    {
+      "name": "WhitelistProof",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "whitelistType",
+            "type": "u8"
+          },
+          {
+            "name": "whitelistedAddress",
+            "type": "publicKey"
+          },
+          {
+            "name": "blog",
+            "type": "publicKey"
+          }
+        ]
+      }
+    }
+  ],
+  "events": [
+    {
+      "name": "PostEvent",
+      "fields": [
+        {
+          "name": "label",
+          "type": "string",
+          "index": false
+        },
+        {
+          "name": "postId",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "nextPostId",
+          "type": {
+            "option": "publicKey"
+          },
+          "index": false
+        }
+      ]
+    }
+  ]
+}
