@@ -30,6 +30,6 @@ export const connected = derived(adapter, ($adapter) => {
 	return false;
 });
 
-export const selectedNetwork = writable(DEV_NET);
+export const selectedNetwork = writable(MAIN_NET);
 export const selectedWallet = writable(!APP_WALLET);
 export const anchorClient = writable(null);
