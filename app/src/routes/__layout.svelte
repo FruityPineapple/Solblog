@@ -32,7 +32,7 @@
 	{#if loaded}
 		<slot />
 	{:else}
-		Loading...
+		<slot />
 	{/if}
 </main>
 
